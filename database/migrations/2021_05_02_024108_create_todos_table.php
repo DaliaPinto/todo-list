@@ -15,10 +15,9 @@ class CreateTodosTable extends Migration
     {
         Schema::create('todos', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('description')->nullable();
-            $table->boolean('status')->default(0);
-            $table->date('due_at');
+            $table->string('description');
+            $table->boolean('is_completed')->default(false);
+            $table->dateTime('completed_at')->nullable();
             $table->unsignedBigInteger('task_id');
             $table->foreign('task_id')->references('id')->on('tasks');
             $table->unsignedBigInteger('user_id')->nullable();

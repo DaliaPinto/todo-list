@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Task;
 use App\Models\Todo;
 use Illuminate\Http\Request;
+use Validator;
 
 class TodoController extends Controller
 {
@@ -14,17 +16,7 @@ class TodoController extends Controller
      */
     public function index()
     {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -35,7 +27,39 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), Todo::$rules);
+
+        if ($validator->fails())
+        {
+            return collect([
+                'status' => 1,
+                'errors' => $validator->errors(),
+                'message' => 'Hubo algunos errores al momento de validar los campos.',
+                'error' => true
+            ]);
+        }
+
+        $todo = new Todo();
+        $todo->description = $request['description'];
+        $todo->is_completed = false;
+        $todo->user_id = 1;
+        $todo->task_id = Task::where('description', 'like', '%To do%')->first()->id;
+
+        if ($todo->save())
+        {
+            return collect([
+                'status' => 0,
+                'message' => 'La tarea se añadió exitosamente',
+                'error' => false,
+                'item' => $todo->load(['user', 'task'])
+            ]);
+        }
+
+        return collect([
+            'status' => 1,
+            'message' => 'Hubo un error al crear la tarea',
+            'error' => true
+        ]);
     }
 
     /**
@@ -50,17 +74,6 @@ class TodoController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Todo  $todo
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Todo $todo)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -69,7 +82,33 @@ class TodoController extends Controller
      */
     public function update(Request $request, Todo $todo)
     {
-        //
+        $validator = Validator::make($request->all(), Todo::$rules);
+
+        if ($validator->fails())
+        {
+            return collect([
+                'status' => 1,
+                'errors' => $validator->errors(),
+                'message' => 'Hubo algunos errores al momento de validar los campos.',
+                'error' => true
+            ]);
+        }
+
+        if($todo->update($request->all()))
+        {
+            return collect([
+                'status' => 0,
+                'error' => false,
+                'item' => $todo->load(['user', 'task']),
+                'message' => 'La tarea se ha actualizado exitosamente'
+            ]);
+        }
+
+        return collect([
+            'status' => 1,
+            'error' => true,
+            'message' => 'Hubo un error al actualizar la tarea'
+        ]);
     }
 
     /**
@@ -80,6 +119,18 @@ class TodoController extends Controller
      */
     public function destroy(Todo $todo)
     {
-        //
+        if ($todo->destroy($todo->id))
+            return collect([
+                'status' => 0,
+                'error' => false,
+                'message' => 'La tarea ha sido eliminada'
+            ]);
+
+        return collect([
+            'status' => 1,
+            'error' => true,
+            'item' => $todo,
+            'message' => 'Hubo un error al eliminar la tarea'
+        ]);
     }
 }

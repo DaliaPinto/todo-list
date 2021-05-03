@@ -25,7 +25,7 @@ class Todo extends Model
         'description' => 'required|string|max:194',
         'is_completed' => 'nullable|boolean',
         'completed_at' => 'nullable',
-        'task_id' => 'exists:tasks,id|required',
+        'task_id' => 'exists:tasks,id|nullable',
         'user_id' => 'exists:users,id|nullable'
     ];
 

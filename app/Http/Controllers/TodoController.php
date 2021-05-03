@@ -35,7 +35,7 @@ class TodoController extends Controller
             return collect([
                 'status' => 1,
                 'errors' => $validator->errors(),
-                'message' => 'Hubo algunos errores al momento de validar los campos.',
+                'message' => 'Some fields are wrong',
                 'error' => true
             ]);
         }
@@ -50,7 +50,7 @@ class TodoController extends Controller
         {
             return collect([
                 'status' => 0,
-                'message' => 'La tarea se añadió exitosamente',
+                'message' => 'Item has been added successfully',
                 'error' => false,
                 'item' => $todo->load(['user', 'task'])
             ]);
@@ -58,7 +58,7 @@ class TodoController extends Controller
 
         return collect([
             'status' => 1,
-            'message' => 'Hubo un error al crear la tarea',
+            'message' => 'There was a mistake adding the item',
             'error' => true
         ]);
     }
@@ -92,7 +92,7 @@ class TodoController extends Controller
             return collect([
                 'status' => 1,
                 'errors' => $validator->errors(),
-                'message' => 'Hubo algunos errores al momento de validar los campos.',
+                'message' => 'Some fields are wrong',
                 'error' => true
             ]);
         }
@@ -111,14 +111,14 @@ class TodoController extends Controller
                 'status' => 0,
                 'error' => false,
                 'item' => $todo->load(['user', 'task']),
-                'message' => 'La tarea se ha actualizado exitosamente'
+                'message' => 'Item has been updated successfully'
             ]);
         }
 
         return collect([
             'status' => 1,
             'error' => true,
-            'message' => 'Hubo un error al actualizar la tarea'
+            'message' => 'There was a mistake updating the item',
         ]);
     }
 
@@ -134,14 +134,14 @@ class TodoController extends Controller
             return collect([
                 'status' => 0,
                 'error' => false,
-                'message' => 'La tarea ha sido eliminada'
+                'message' => 'Item has been destroyed successfully'
             ]);
 
         return collect([
             'status' => 1,
             'error' => true,
             'item' => $todo,
-            'message' => 'Hubo un error al eliminar la tarea'
+            'message' => 'There was a mistake destroying the item',
         ]);
     }
 }

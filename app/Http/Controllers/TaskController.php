@@ -14,7 +14,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $data = Task::with('todos')->where('status', true)
+        $data = Task::with('todos.user')->where('status', true)
             ->get()
         ;
         return $data;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Models\Todo;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -84,6 +85,8 @@ class TodoController extends Controller
     {
         $validator = Validator::make($request->all(), Todo::$rules);
 
+        $todo_request = $request->all();
+
         if ($validator->fails())
         {
             return collect([
@@ -94,7 +97,15 @@ class TodoController extends Controller
             ]);
         }
 
-        if($todo->update($request->all()))
+        if ($todo_request['is_completed'])
+        {
+            $todo_request['task_id'] = Task::where('description', 'like', '%Completed%')->first()->id;
+            $todo_request['completed_at'] = Carbon::now()->toDateTimeString();
+        }
+        else
+            $todo_request['task_id'] = Task::where('description', 'like', '%To do%')->first()->id;
+
+        if($todo->update($todo_request))
         {
             return collect([
                 'status' => 0,
